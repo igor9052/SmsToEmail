@@ -1,0 +1,35 @@
+<resources>
+
+    <!--DO NOT TRANSLATE THESE ***START*** -->
+    <string name="pref_category_key_name_smtp_settings">pref_category_key_smtp_settings</string>
+    <string name="pref_key_name_smtp_server">pref_smtp_server</string>
+    <string name="pref_key_name_smtp_port">pref_smtp_port</string>
+    <string name="pref_key_name_smtp_login">pref_smtp_login</string>
+    <string name="pref_key_name_smtp_password">pref_smtp_password</string>
+    <string name="pref_value_smtp_server">smtp.gmail.com</string>
+    <string name="pref_value_smtp_port">587</string>
+
+    <string name="pref_category_key_name_email_settings">pref_category_key_email_settings</string>
+    <string name="pref_key_name_recipients">pref_key_recipients</string>
+    <string name="pref_key_name_subject">pref_key_subject</string>
+    <!--DO NOT TRANSLATE THESE ***END*** -->
+
+    <string name="app_name">SmsToEmail</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="preferences_title_smtp_server">Gmail SMTP Server</string>
+    <string name="preferences_title_smtp_port">SMTP Port</string>
+    <string name="preferences_title_smtp_login">Login</string>
+    <string name="preferences_title_smtp_password">Password</string>
+    <string name="alert_dialog_title_smtp_configuration">SMTP configuration</string>
+    <string name="alert_dialog_message_smtp_configuration">You should configure SMTP server in order to send emails.</string>
+    <string name="alert_dialog_positive_button_text">Configure</string>
+    <string name="alert_dialog_negative_button_text">Cancel</string>
+    <string name="pref_category_title_smtp_settings">SMTP Settings</string>
+    <string name="pref_category_title_email_settings">Email settings</string>
+    <string name="preference_title_email_recipients">Email recipient</string>
+    <string name="preference_title_email_subject">Email subject</string>
+
+
+</resources>

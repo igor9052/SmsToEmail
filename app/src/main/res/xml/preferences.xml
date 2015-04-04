@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="@string/pref_category_key_name_smtp_settings"
+        android:title="@string/pref_category_title_smtp_settings"
+        >
+        <EditTextPreference
+            android:defaultValue="@string/pref_value_smtp_server"
+            android:inputType="textUri"
+            android:key="@string/pref_key_name_smtp_server"
+            android:title="@string/preferences_title_smtp_server" />
+        <EditTextPreference
+            android:defaultValue="@string/pref_value_smtp_port"
+            android:inputType="numberDecimal"
+            android:key="@string/pref_key_name_smtp_port"
+            android:title="@string/preferences_title_smtp_port" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textEmailAddress"
+            android:key="@string/pref_key_name_smtp_login"
+            android:title="@string/preferences_title_smtp_login" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textPassword"
+            android:key="@string/pref_key_name_smtp_password"
+            android:title="@string/preferences_title_smtp_password" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="@string/pref_category_key_name_email_settings"
+        android:title="@string/pref_category_title_email_settings">
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textEmailAddress"
+            android:key="@string/pref_key_name_recipients"
+            android:title="@string/preference_title_email_recipients"
+            />
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textEmailSubject"
+            android:key="@string/pref_key_name_subject"
+            android:title="@string/preference_title_email_subject"
+            />
+    </PreferenceCategory>
+</PreferenceScreen>
