@@ -104,7 +104,7 @@ public class SendEmailService extends IntentService {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/html");
         intent.putExtra(Intent.EXTRA_EMAIL, AppPreferences.Email.getInstance().getRecipients());
-        intent.putExtra(Intent.EXTRA_SUBJECT, AppPreferences.Email.getInstance().getSubject() + message.getOriginatingAddress());
+        intent.putExtra(Intent.EXTRA_SUBJECT, AppPreferences.Email.getInstance().getSubject() + " " +  message.getOriginatingAddress());
         intent.putExtra(Intent.EXTRA_TEXT, message.getDisplayMessageBody());
         return intent;
     }

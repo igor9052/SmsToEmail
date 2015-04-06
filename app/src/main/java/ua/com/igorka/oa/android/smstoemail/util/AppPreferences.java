@@ -117,6 +117,12 @@ public final class AppPreferences {
 
         private Email() {
             updateEmailSettings();
+            sharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    updateEmailSettings();
+                }
+            });
         }
 
         private void updateEmailSettings() {
