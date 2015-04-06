@@ -1,7 +1,6 @@
 package ua.com.igorka.oa.android.smstoemail.util;
 
 import android.content.Context;
-import android.telephony.SmsMessage;
 
 import java.util.List;
 
@@ -29,19 +28,13 @@ public class MessageStorage {
         return messageStorage;
     }
 
-    public void addMessage(SmsMessage smsMessage) {
-        Sms sms = new Sms();
-        sms.setOriginatingAddress(smsMessage.getOriginatingAddress());
-        sms.setDisplayOriginatingAddress(smsMessage.getDisplayOriginatingAddress());
-        sms.setDisplayMessageBody(smsMessage.getDisplayMessageBody());
-        sms.setTimestamp(String.valueOf(smsMessage.getTimestampMillis()));
-        dao.insert(sms);
-    }
-
     public void addMessage(Sms sms) {
         dao.insert(sms);
     }
 
+    /**
+     * @return null if there are no messages in the storage
+     */
     public List<Sms> getMessages() {
         List<Sms> result = dao.selectAll();
         if (result != null) {

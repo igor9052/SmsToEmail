@@ -10,6 +10,10 @@ import org.apache.commons.net.smtp.SMTPReply;
 import org.apache.commons.net.smtp.SimpleSMTPHeader;
 
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
+
+import ua.com.igorka.oa.android.smstoemail.db.entity.Sms;
 
 /**
  * Created by Igor Kuzmenko on 01.04.2015.
@@ -17,10 +21,9 @@ import java.io.Writer;
  */
 public final class Utils {
 
-    public static SmsMessage[] getMessagesFromIntent(Intent intent) {
+    private static SmsMessage[] getMessagesFromIntent(Intent intent) {
         Object[] messages = (Object[]) intent.getSerializableExtra("pdus");
         byte[][] pduObjs = new byte[messages.length][];
-
         for (int i = 0; i < messages.length; i++) {
             pduObjs[i] = (byte[]) messages[i];
         }
@@ -35,6 +38,36 @@ public final class Utils {
         }
         return msgs;
     }
+
+    public static List<Sms> getSmsMessagesFromIntent(Intent intent) {
+        SmsMessage[] msgs = getMessagesFromIntent(intent);
+        List<Sms> result = new ArrayList<>();
+        for (int k,i = 0; i < msgs.length; i = i + k + 1) {
+            k = 0;
+            result.add(convertSmsMessageToSms(msgs[i]));
+            for (int j = i + 1; j < msgs.length; j++) {
+                if (msgs[i].getDisplayOriginatingAddress().equals(msgs[j].getDisplayOriginatingAddress())
+                        && msgs[i].getTimestampMillis() == msgs[j].getTimestampMillis()) {
+                    result.get(i).setDisplayMessageBody(result.get(i).getDisplayMessageBody() + msgs[j].getDisplayMessageBody());
+                    k++;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private static Sms convertSmsMessageToSms(SmsMessage message) {
+        Sms sms = new Sms();
+        sms.setOriginatingAddress(message.getOriginatingAddress());
+        sms.setDisplayOriginatingAddress(message.getDisplayOriginatingAddress());
+        sms.setDisplayMessageBody(message.getDisplayMessageBody());
+        sms.setTimestamp(String.valueOf(message.getTimestampMillis()));
+        return sms;
+    }
+
 
 
     /**
@@ -55,8 +88,6 @@ public final class Utils {
 
         String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
         String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-
-        Log.i("Utils.SendEmail", text);
 
         AuthenticatingSMTPClient client = new AuthenticatingSMTPClient("TLS", "UTF-8");
         try {

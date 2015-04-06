@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.telephony.SmsMessage;
 import android.util.Log;
 
 import java.util.List;
@@ -42,40 +41,37 @@ public class SendEmailService extends IntentService {
         }
 
         if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
-            SmsMessage[] messages = Utils.getMessagesFromIntent(intent);
-
-            for (SmsMessage message : messages) {
-                try {
-                    Utils.sendEmail(createEmailIntent(message));
-                } catch (Exception e) {
-                    MessageStorage.getInstance(App.getContext()).addMessage(message);
-                    enableConnectionStateReceiver();
-                    e.printStackTrace();
-                }
-                Log.d(TAG, message.getOriginatingAddress() + " : " +
-                        message.getDisplayOriginatingAddress() + " : " +
-                        message.getDisplayMessageBody() + " : " +
-                        message.getTimestampMillis());
+            List<Sms> smsList = Utils.getSmsMessagesFromIntent(intent);
+            for (Sms sms : smsList) {
+                sendSmsAsEmail(sms);
             }
         }
 
+        /*Messages from storage are sent here*/
         if (intent.getAction().equals(ACTION_POSTPONE_EMAIL)) {
             List<Sms> smsList = MessageStorage.getInstance(App.getContext()).getMessages();
-            for (Sms message : smsList) {
-                try {
-                    Utils.sendEmail(createEmailIntent(message));
-                    disableConnectionStateReceiver();
-                } catch (Exception e) {
-                    MessageStorage.getInstance(App.getContext()).addMessage(message);
-                    enableConnectionStateReceiver();
-                    e.printStackTrace();
-                }
-                Log.d(TAG, message.getOriginatingAddress() + " : " +
-                        message.getDisplayOriginatingAddress() + " : " +
-                        message.getDisplayMessageBody() + " : " +
-                        message.getTimestamp());
+            for (Sms sms : smsList) {
+                sendSmsAsEmail(sms);
+            }
+            /*if all postpone sms have been sent successfully we can disable ConnectionStateReceiver */
+            if (MessageStorage.getInstance(App.getContext()).getMessages() == null) {
+                disableConnectionStateReceiver();
             }
         }
+    }
+
+    /*Try to send sms. If no internet connection the sms is adding to sms storage
+    * and ConnectionStateReceiver becomes enabled. When internet connection is available
+     * messages from storage will be sent once more*/
+    private void sendSmsAsEmail(Sms sms) {
+        try {
+            Utils.sendEmail(createEmailIntent(sms));
+        } catch (Exception e) {
+            MessageStorage.getInstance(App.getContext()).addMessage(sms);
+            enableConnectionStateReceiver();
+            e.printStackTrace();
+        }
+        Log.d(TAG, sms.toString());
     }
 
     private void enableConnectionStateReceiver() {
@@ -104,26 +100,13 @@ public class SendEmailService extends IntentService {
 
     }
 
-    private Intent createEmailIntent(SmsMessage message) {
-        Intent intent = createBaseIntent();
-        intent.putExtra(Intent.EXTRA_SUBJECT, AppPreferences.Email.getInstance().getSubject() + message.getOriginatingAddress());
-        intent.putExtra(Intent.EXTRA_TEXT, message.getDisplayMessageBody());
-        return intent;
-    }
-
     private Intent createEmailIntent(Sms message) {
-        Intent intent = createBaseIntent();
-        intent.putExtra(Intent.EXTRA_SUBJECT, AppPreferences.Email.getInstance().getSubject() + message.getOriginatingAddress());
-        intent.putExtra(Intent.EXTRA_TEXT, message.getDisplayMessageBody());
-        return intent;
-    }
-
-    private Intent createBaseIntent() {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/html");
         intent.putExtra(Intent.EXTRA_EMAIL, AppPreferences.Email.getInstance().getRecipients());
+        intent.putExtra(Intent.EXTRA_SUBJECT, AppPreferences.Email.getInstance().getSubject() + message.getOriginatingAddress());
+        intent.putExtra(Intent.EXTRA_TEXT, message.getDisplayMessageBody());
         return intent;
     }
-
 
 }
