@@ -10,9 +10,6 @@ import org.apache.commons.net.smtp.SMTPReply;
 import org.apache.commons.net.smtp.SimpleSMTPHeader;
 
 import java.io.Writer;
-import java.util.List;
-
-import ua.com.igorka.oa.android.smstoemail.db.entity.Sms;
 
 /**
  * Created by Igor Kuzmenko on 01.04.2015.
@@ -21,7 +18,6 @@ import ua.com.igorka.oa.android.smstoemail.db.entity.Sms;
 public final class Utils {
 
     public static SmsMessage[] getMessagesFromIntent(Intent intent) {
-
         Object[] messages = (Object[]) intent.getSerializableExtra("pdus");
         byte[][] pduObjs = new byte[messages.length][];
 
@@ -37,7 +33,6 @@ public final class Utils {
             pdus[i] = pduObjs[i];
             msgs[i] = SmsMessage.createFromPdu(pdus[i]);
         }
-
         return msgs;
     }
 

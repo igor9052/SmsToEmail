@@ -15,13 +15,10 @@ import ua.com.igorka.oa.android.smstoemail.db.entity.Sms;
  * can't be delivered (Internet is absent or other send issues).
  */
 public class MessageStorage {
-    private static final String FILE_NAME = "messages_storage";
-    private static Context context;
     private static MessageStorage messageStorage = null;
     private DAO<Integer, Sms> dao;
 
     private MessageStorage(Context context) {
-        MessageStorage.context = context;
         dao = new SmsDAOImpl(context);
     }
 
@@ -30,19 +27,6 @@ public class MessageStorage {
             messageStorage = new MessageStorage(context);
         }
         return messageStorage;
-    }
-
-    /**
-     * return true if there are undelivered messages in the storage
-     * */
-    public boolean isEmpty() {
-        return (dao.selectAll() == null);
-    }
-
-    public void addMessages(SmsMessage[] smsMessages) {
-        for (SmsMessage message : smsMessages) {
-            addMessage(message);
-        }
     }
 
     public void addMessage(SmsMessage smsMessage) {
@@ -57,8 +41,6 @@ public class MessageStorage {
     public void addMessage(Sms sms) {
         dao.insert(sms);
     }
-
-
 
     public List<Sms> getMessages() {
         List<Sms> result = dao.selectAll();

@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.storage.StorageManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
@@ -19,16 +18,13 @@ import ua.com.igorka.oa.android.smstoemail.util.Utils;
 
 /**
  * Created by Igor Kuzmenko on 01.04.2015.
- *
+ * Service gets sms messages and resend them as emails
  */
 public class SendEmailService extends IntentService {
 
-    public static final String TAG = SendEmailService.class.getSimpleName();
     public static final String ACTION_POSTPONE_EMAIL = SendEmailService.class.getName() + ".POSTPONE_EMAIL";
+    private static final String TAG = SendEmailService.class.getSimpleName();
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     */
     public SendEmailService() {
         super(SendEmailService.class.getSimpleName());
     }
@@ -45,10 +41,10 @@ public class SendEmailService extends IntentService {
             return;
         }
 
-        if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")){
+        if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
             SmsMessage[] messages = Utils.getMessagesFromIntent(intent);
 
-            for (SmsMessage message : messages){
+            for (SmsMessage message : messages) {
                 try {
                     Utils.sendEmail(createEmailIntent(message));
                 } catch (Exception e) {
@@ -65,7 +61,7 @@ public class SendEmailService extends IntentService {
 
         if (intent.getAction().equals(ACTION_POSTPONE_EMAIL)) {
             List<Sms> smsList = MessageStorage.getInstance(App.getContext()).getMessages();
-            for (Sms message : smsList){
+            for (Sms message : smsList) {
                 try {
                     Utils.sendEmail(createEmailIntent(message));
                     disableConnectionStateReceiver();
@@ -109,19 +105,23 @@ public class SendEmailService extends IntentService {
     }
 
     private Intent createEmailIntent(SmsMessage message) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/html");
-        intent.putExtra(Intent.EXTRA_EMAIL, AppPreferences.Email.getInstance().getRecipients());
+        Intent intent = createBaseIntent();
         intent.putExtra(Intent.EXTRA_SUBJECT, AppPreferences.Email.getInstance().getSubject() + message.getOriginatingAddress());
         intent.putExtra(Intent.EXTRA_TEXT, message.getDisplayMessageBody());
         return intent;
     }
+
     private Intent createEmailIntent(Sms message) {
+        Intent intent = createBaseIntent();
+        intent.putExtra(Intent.EXTRA_SUBJECT, AppPreferences.Email.getInstance().getSubject() + message.getOriginatingAddress());
+        intent.putExtra(Intent.EXTRA_TEXT, message.getDisplayMessageBody());
+        return intent;
+    }
+
+    private Intent createBaseIntent() {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/html");
         intent.putExtra(Intent.EXTRA_EMAIL, AppPreferences.Email.getInstance().getRecipients());
-        intent.putExtra(Intent.EXTRA_SUBJECT, AppPreferences.Email.getInstance().getSubject() + message.getOriginatingAddress());
-        intent.putExtra(Intent.EXTRA_TEXT, message.getDisplayMessageBody());
         return intent;
     }
 

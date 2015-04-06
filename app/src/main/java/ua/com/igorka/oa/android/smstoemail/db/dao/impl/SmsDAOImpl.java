@@ -22,10 +22,8 @@ public class SmsDAOImpl implements DAO<Integer, Sms> {
 
     private StorageDbContract.SmsDbHelper mDbHelper;
     private SQLiteDatabase db;
-    private Context context;
 
     public SmsDAOImpl(Context context) {
-        this.context = context;
         mDbHelper = StorageDbContract.SmsDbHelper.getInstance(context);
     }
 
@@ -61,7 +59,7 @@ public class SmsDAOImpl implements DAO<Integer, Sms> {
         );
         List<Sms> result = null;
 
-        if (cursor != null & cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             result = new ArrayList<>();
             do {
                 Sms sms = new Sms();
