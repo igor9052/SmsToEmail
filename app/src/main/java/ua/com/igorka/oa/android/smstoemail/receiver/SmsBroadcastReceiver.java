@@ -1,4 +1,4 @@
-package ua.com.igorka.oa.android.smstoemail;
+package ua.com.igorka.oa.android.smstoemail.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

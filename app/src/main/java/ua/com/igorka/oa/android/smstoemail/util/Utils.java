@@ -10,6 +10,9 @@ import org.apache.commons.net.smtp.SMTPReply;
 import org.apache.commons.net.smtp.SimpleSMTPHeader;
 
 import java.io.Writer;
+import java.util.List;
+
+import ua.com.igorka.oa.android.smstoemail.db.entity.Sms;
 
 /**
  * Created by Igor Kuzmenko on 01.04.2015.
@@ -37,6 +40,7 @@ public final class Utils {
 
         return msgs;
     }
+
 
     /**
      * This method sends email.
