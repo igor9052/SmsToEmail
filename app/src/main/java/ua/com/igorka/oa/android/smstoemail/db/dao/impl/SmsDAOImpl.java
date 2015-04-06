@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import ua.com.igorka.oa.android.smstoemail.db.StorageDbContract;
+import ua.com.igorka.oa.android.smstoemail.db.SmsStorageDbContract;
 import ua.com.igorka.oa.android.smstoemail.db.dao.DAO;
 import ua.com.igorka.oa.android.smstoemail.db.entity.Sms;
 
@@ -18,23 +18,23 @@ import ua.com.igorka.oa.android.smstoemail.db.entity.Sms;
  */
 public class SmsDAOImpl implements DAO<Integer, Sms> {
 
-    private static final String TABLE_NAME = StorageDbContract.SmsTable.TABLE_NAME;
+    private static final String TABLE_NAME = SmsStorageDbContract.SmsTable.TABLE_NAME;
 
-    private StorageDbContract.SmsDbHelper mDbHelper;
+    private SmsStorageDbContract.SmsDbHelper mDbHelper;
     private SQLiteDatabase db;
 
     public SmsDAOImpl(Context context) {
-        mDbHelper = StorageDbContract.SmsDbHelper.getInstance(context);
+        mDbHelper = SmsStorageDbContract.SmsDbHelper.getInstance(context);
     }
 
     @Override
     public void insert(Sms entity) {
         db = mDbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(StorageDbContract.SmsTable.COLUMN_NAME_ORIGINATING_ADDRESS, entity.getOriginatingAddress());
-        contentValues.put(StorageDbContract.SmsTable.COLUMN_NAME_DISPLAY_ORIGINATING_ADDRESS, entity.getDisplayOriginatingAddress());
-        contentValues.put(StorageDbContract.SmsTable.COLUMN_NAME_DISPLAY_MESSAGE_BODY, entity.getDisplayMessageBody());
-        contentValues.put(StorageDbContract.SmsTable.COLUMN_NAME_TIMESTAMP, entity.getTimestamp());
+        contentValues.put(SmsStorageDbContract.SmsTable.COLUMN_NAME_ORIGINATING_ADDRESS, entity.getOriginatingAddress());
+        contentValues.put(SmsStorageDbContract.SmsTable.COLUMN_NAME_DISPLAY_ORIGINATING_ADDRESS, entity.getDisplayOriginatingAddress());
+        contentValues.put(SmsStorageDbContract.SmsTable.COLUMN_NAME_DISPLAY_MESSAGE_BODY, entity.getDisplayMessageBody());
+        contentValues.put(SmsStorageDbContract.SmsTable.COLUMN_NAME_TIMESTAMP, entity.getTimestamp());
         db.insert(TABLE_NAME, null, contentValues);
         db.close();
     }
@@ -63,11 +63,11 @@ public class SmsDAOImpl implements DAO<Integer, Sms> {
             result = new ArrayList<>();
             do {
                 Sms sms = new Sms();
-                sms.setId(cursor.getInt(cursor.getColumnIndexOrThrow(StorageDbContract.SmsTable._ID)));
-                sms.setOriginatingAddress(cursor.getString(cursor.getColumnIndexOrThrow(StorageDbContract.SmsTable.COLUMN_NAME_ORIGINATING_ADDRESS)));
-                sms.setDisplayOriginatingAddress(cursor.getString(cursor.getColumnIndexOrThrow(StorageDbContract.SmsTable.COLUMN_NAME_DISPLAY_ORIGINATING_ADDRESS)));
-                sms.setDisplayMessageBody(cursor.getString(cursor.getColumnIndexOrThrow(StorageDbContract.SmsTable.COLUMN_NAME_DISPLAY_MESSAGE_BODY)));
-                sms.setTimestamp(cursor.getString(cursor.getColumnIndexOrThrow(StorageDbContract.SmsTable.COLUMN_NAME_TIMESTAMP)));
+                sms.setId(cursor.getInt(cursor.getColumnIndexOrThrow(SmsStorageDbContract.SmsTable._ID)));
+                sms.setOriginatingAddress(cursor.getString(cursor.getColumnIndexOrThrow(SmsStorageDbContract.SmsTable.COLUMN_NAME_ORIGINATING_ADDRESS)));
+                sms.setDisplayOriginatingAddress(cursor.getString(cursor.getColumnIndexOrThrow(SmsStorageDbContract.SmsTable.COLUMN_NAME_DISPLAY_ORIGINATING_ADDRESS)));
+                sms.setDisplayMessageBody(cursor.getString(cursor.getColumnIndexOrThrow(SmsStorageDbContract.SmsTable.COLUMN_NAME_DISPLAY_MESSAGE_BODY)));
+                sms.setTimestamp(cursor.getString(cursor.getColumnIndexOrThrow(SmsStorageDbContract.SmsTable.COLUMN_NAME_TIMESTAMP)));
                 result.add(sms);
             } while (cursor.moveToNext());
             cursor.close();
@@ -80,7 +80,7 @@ public class SmsDAOImpl implements DAO<Integer, Sms> {
     public void delete(Integer id) {
         db = mDbHelper.getWritableDatabase();
         db.delete(TABLE_NAME,
-                StorageDbContract.SmsTable._ID + "=?",
+                SmsStorageDbContract.SmsTable._ID + "=?",
                 new String[]{String.valueOf(id)});
         db.close();
     }
