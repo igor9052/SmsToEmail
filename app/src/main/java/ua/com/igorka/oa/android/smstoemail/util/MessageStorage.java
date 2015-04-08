@@ -33,6 +33,7 @@ public class MessageStorage {
     }
 
     /**
+     * Messages are deleted from storage when this method is invoked.
      * @return null if there are no messages in the storage
      */
     public List<Sms> getMessages() {

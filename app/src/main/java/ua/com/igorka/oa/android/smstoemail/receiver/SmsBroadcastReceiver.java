@@ -8,7 +8,7 @@ import ua.com.igorka.oa.android.smstoemail.service.SendEmailService;
 
 /**
  * Created by Igor Kuzmenko on 01.04.2015.
- * This broadcast receiver gets SMS messages and resend it to SendEmailService class
+ * This broadcast receiver gets SMS messages and sends them to SendEmailService class
  */
 public class SmsBroadcastReceiver extends BroadcastReceiver {
 

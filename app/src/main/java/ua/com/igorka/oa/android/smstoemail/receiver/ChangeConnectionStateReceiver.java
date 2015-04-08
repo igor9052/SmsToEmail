@@ -11,9 +11,11 @@ import ua.com.igorka.oa.android.smstoemail.service.SendEmailService;
 /**
  * Created by Igor Kuzmenko on 06.04.2015.
  *
+ *
  */
 public class ChangeConnectionStateReceiver extends BroadcastReceiver {
 
+    /*When internet connection is active SendEmailService is started in order to send emails */
     @Override
     public void onReceive(Context context, Intent intent) {
         if (isConnected(context)) {
