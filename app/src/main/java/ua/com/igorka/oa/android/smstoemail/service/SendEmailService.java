@@ -1,13 +1,22 @@
 package ua.com.igorka.oa.android.smstoemail.service;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 
 import java.util.List;
 
+import ua.com.igorka.oa.android.smstoemail.R;
+import ua.com.igorka.oa.android.smstoemail.activity.MainActivity;
+import ua.com.igorka.oa.android.smstoemail.activity.SettingsActivity;
 import ua.com.igorka.oa.android.smstoemail.db.entity.Sms;
 import ua.com.igorka.oa.android.smstoemail.receiver.ChangeConnectionStateReceiver;
 import ua.com.igorka.oa.android.smstoemail.util.App;
@@ -60,7 +69,7 @@ public class SendEmailService extends IntentService {
         }
     }
 
-    /*Try to send sms. If no internet connection the sms is adding to sms storage
+    /*Trying to send sms. If no internet connection the sms is adding to sms storage
     * and ConnectionStateReceiver becomes enabled. When internet connection is available
      * messages from storage will be sent once more*/
     private void sendSmsAsEmail(Sms sms) {
@@ -90,21 +99,40 @@ public class SendEmailService extends IntentService {
                 PackageManager.DONT_KILL_APP);
     }
 
-    //TODO: Implement notification for user if Email (recipient, subject, etc) is not configured
-    private void emailIsNotConfigured() {
-
+    private void smtpIsNotConfiguredNotification() {
+        createAndNotifyNotification(getResources().getString(R.string.notification_text_smtp_is_not_configured));
     }
 
-    //TODO: Implement notification for user that SMTP is not configured
-    private void smtpIsNotConfiguredNotification() {
+    private void emailIsNotConfigured() {
+        createAndNotifyNotification(getResources().getString(R.string.notification_text_email_is_not_configured));
+    }
 
+    //TODO: Implement notification for 4.0.3 android version
+    private void createAndNotifyNotification(String contentText) {
+        if (Build.VERSION.SDK_INT > 15) {
+            Notification.Builder mBuilder = new Notification.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(getResources().getString(R.string.app_name))
+                    .setContentText(contentText)
+                    .setAutoCancel(true);
+
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addNextIntent(new Intent(this, MainActivity.class));
+            stackBuilder.addNextIntent(new Intent(this, SettingsActivity.class));
+            PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            mBuilder.setContentIntent(pendingIntent);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(0, mBuilder.build());
+        }
     }
 
     private Intent createEmailIntent(Sms message) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/html");
         intent.putExtra(Intent.EXTRA_EMAIL, AppPreferences.Email.getInstance().getRecipients());
-        intent.putExtra(Intent.EXTRA_SUBJECT, AppPreferences.Email.getInstance().getSubject() + " " +  message.getOriginatingAddress());
+        intent.putExtra(Intent.EXTRA_SUBJECT, AppPreferences.Email.getInstance().getSubject() + " " + message.getOriginatingAddress());
         intent.putExtra(Intent.EXTRA_TEXT, message.getDisplayMessageBody());
         return intent;
     }

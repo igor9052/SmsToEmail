@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,6 +14,8 @@ import ua.com.igorka.oa.android.smstoemail.util.AppPreferences;
 
 public class MainActivity extends Activity {
 
+    public static final String TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +23,7 @@ public class MainActivity extends Activity {
         if (!AppPreferences.SMTP.getInstance().isConfigured()) {
             showSMTPConfigAlert();
         }
+        Log.i(TAG, "ON_CREATE");
     }
 
     private void showSMTPConfigAlert() {
@@ -63,5 +67,11 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "ON_DESTROY");
     }
 }
