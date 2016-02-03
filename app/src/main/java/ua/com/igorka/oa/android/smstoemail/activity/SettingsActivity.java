@@ -9,7 +9,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
 
@@ -116,7 +115,9 @@ public class SettingsActivity extends Activity {
                 // EditPreference
                 EditTextPreference editTextPref = (EditTextPreference) pref;
                 if ((editTextPref.getEditText().getInputType() & 0x80)  == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
-                    editTextPref.setSummary("********");
+                    if (editTextPref.getEditText().getText().toString().length() != 0) {
+                        editTextPref.setSummary("********");
+                    }
                     return;
                 }
                 editTextPref.setSummary(editTextPref.getText());
