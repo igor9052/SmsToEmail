@@ -131,7 +131,7 @@ public final class AppPreferences {
         }
 
         private String[] getArrayOfRecipients(String str) {
-            String[] result = str.split(";");
+            String[] result = str.split(context.getString(R.string.recipients_delimiter));
             for (int i = 0; i < result.length; i++) {
                 result[i] = result[i].trim();
             }
